@@ -1,4 +1,10 @@
 import requests
+from configparser import ConfigParser
+from urllib.parse import urlencode
+from os import path
+
+config = ConfigParser()
+config.read(path.abspath(path.join(path.dirname(__file__), '../config.ini')))
 
 
 class OpenAPI(object):
@@ -6,7 +12,7 @@ class OpenAPI(object):
         self._host = host
         self._path = path
         self._params = params
-        self._params['serviceKey'] = '123'
+        self._params['serviceKey'] = config['OPEN_API']['SECRET_KEY']
 
     def __repr__(self):
         return f" API : {self._host + self._path}"
@@ -16,22 +22,32 @@ class OpenAPI(object):
 
     def get_json_response(self):
         resp = None
+        result_code = None
+        total_count = None
+        body = None
 
         try:
-            req = requests.get(url=f'{self._host}{self._path}',
-                               params=self._params)
+            req = requests.get(url=f'{self._host}{self._path}?{urlencode(query=self._params, safe="%")}')
+
             if not req.ok:
                 raise ValueError(f'response is not 200 : {req.status_code}')
 
-            if self._params['_returnType'] or self._params['_type']:
+            if self._params.get('_returnType') or self._params.get('_type'):
                 resp = req.json()
+
             else:
                 # xml to dict
                 # dict to json
                 pass
-            result_code = resp['response']['header']['resultCode']
-            total_count = resp['response']['body']['totalCount']
-            body = resp['response']['body']['items']['item']
+            if self._params.get('_type'):
+                result_code = resp['response']['header']['resultCode']
+                total_count = resp['response']['body']['totalCount']
+                body = resp['response']['body']['items']['item']
+
+            elif self._params.get('_returnType'):
+                result_code = req.status_code
+                total_count = resp['totalCount']
+                body = resp['list']
 
         except Exception as e:
             return e
@@ -42,20 +58,3 @@ class OpenAPI(object):
                 'total_count': total_count,
                 'body': body
             }
-
-
-
-def main():
-    host = 'http://openapi.airkorea.or.kr/openapi/services/rest'
-    path = '/ArpltnInforInqireSvc/getCtprvnMesureLIst'
-    params = {
-        'numOfRows': 100,
-        'pageNo': 1,
-        'itemCode': 'PM10',
-        'dataGubun': 'HOUR',
-        '_returnType': 'json'
-    }
-    api = OpenAPI(host=host, path=path, params=params)
-    api.get_json_response()
-
-main()
