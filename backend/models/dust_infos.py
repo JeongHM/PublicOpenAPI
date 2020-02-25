@@ -12,12 +12,15 @@ class DustInfos(db.Model):
     pm10 = db.Column(db.String(10), nullable=True)
     date_time = db.Column(db.String(30), nullable=False)
 
-#     def __init__(self, id, city, pm2, pm10, date_time):
-#         self._id = id
-#         self._city = city
-#         self._pm2 = pm2 if pm2 else None
-#         self._pm10 = pm10 if pm10 else None
-#         self._date_time = date_time
+    @property
+    def serialize(self):
+        """Return Serialize Format"""
+        return {
+            'city': self.city,
+            'pm2': self.pm2,
+            'pm10': self.pm10,
+            'date_time': self.date_time
+        }
 #
 #
 # def add(items):
