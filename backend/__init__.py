@@ -14,7 +14,7 @@ def create_app():
     db = SQLAlchemy(app)
 
     with app.app_context():
-        from backend.api.dust import dust_blueprint
+        from backend.controllers.api.dust import dust_blueprint
         app.register_blueprint(dust_blueprint)
 
         return app, db

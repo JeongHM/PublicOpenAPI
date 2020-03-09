@@ -3,12 +3,22 @@ dust_blueprint = Blueprint('dust', __name__, url_prefix='/api/dust')
 from backend.models.dust_infos import DustInfos
 from backend.common.decorators import response_format_decorator
 
-@dust_blueprint.route('/', methods=['GET'])
+@dust_blueprint.route('/', methods=['GET'], endpoint='index')
 def index():
     return 'welcome dust api'
 
 
-@dust_blueprint.route('/current/', methods=['GET'])
+@dust_blueprint.route('/update', methods=['GET'], endpoint='update_dust_info')
+@response_format_decorator
+def update_dust_info():
+    headers = dict(request.headers)
+    if headers.get('api-key') == "dkssudgktpdy":
+        pass
+    else:
+        result = {'data': '잘못된 접근입니다'}
+        return {'code': 404, 'data': None}, result
+
+@dust_blueprint.route('/current/', methods=['GET'], endpoint='get_current_dust_info')
 @response_format_decorator
 def get_current_dust_info():
     date_time = request.args.get('date_time')
