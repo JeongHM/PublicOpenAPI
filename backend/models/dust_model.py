@@ -1,5 +1,4 @@
 from backend.app import db
-from datetime import datetime
 
 
 class DustInfos(db.Model):
