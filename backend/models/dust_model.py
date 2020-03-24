@@ -20,18 +20,3 @@ class DustInfos(db.Model):
             'pm10': self.pm10,
             'date_time': self.date_time
         }
-#
-#
-# def add(items):
-#     if not isinstance(items, list):
-#         items = [items]
-#
-#     for item in items:
-#         event = DustInfos(id=item.get('id'),
-#                           city=item.get('city'),
-#                           pm2=item.get('pm2'),
-#                           pm10=item.get('pm10'),
-#                           date_time=datetime.now().strftime('%Y%m%d'))
-#         db.session.add(event)
-#         db.session.commit()
-#

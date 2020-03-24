@@ -17,9 +17,6 @@ class OpenAPI(object):
     def __repr__(self):
         return f" API : {self._host + self._path}"
 
-    def get_response(self):
-        pass
-
     def get_json_response(self):
         resp = None
         result_code = None
