@@ -1,19 +1,27 @@
 import os
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from backend.controllers.dust_controller import dust_blueprint
+from flask_cors import CORS
+
 from configparser import ConfigParser
+
 
 config = ConfigParser()
 config.read(os.path.abspath(os.path.join(os.path.dirname(__file__), 'config.ini')))
 
-app = Flask(__name__)
-app.secret_key = os.urandom(24)
-app.register_blueprint(dust_blueprint, url_prefix='/dust')
-app.config['SQLALCHEMY_DATABASE_URI'] = config['SQL_ALCHEMY']['URI']
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-db = SQLAlchemy(app=app)
+def create_app():
+    application = Flask(__name__)
+    application.secret_key = os.urandom(24)
+
+    CORS(app=application)
+
+    from backend.controllers.dust import dust_blueprint
+    application.register_blueprint(blueprint=dust_blueprint, url_prefix='/dust')
+
+    return application
+
+
+app = create_app()
 
 
 @app.route('/', methods=['GET'])
@@ -22,4 +30,4 @@ def index():
 
 
 if __name__ == '__main__':
-    app.run(host='localhost', port=8080, debug=True)
+    app.run(host='127.0.0.1', port=8080, debug=True)
