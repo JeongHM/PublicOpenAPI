@@ -237,4 +237,5 @@ venv
 venv/
 
 *.ini
+/frontend
 # End of https://www.gitignore.io/api/python,pycharm,windows,visualstudiocode
